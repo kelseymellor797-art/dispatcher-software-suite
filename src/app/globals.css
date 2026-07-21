@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --background: #f6f7fb;
+  --foreground: #121826;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f1f4fa;
+  --border: #d9deea;
+  --border-subtle: #e8ebf2;
+  --primary: #7c3aed;
+  --primary-hover: #6d28d9;
+  --secondary: #2563eb;
+  --accent: #06b6d4;
+  --muted-text: #64748b;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #e11d48;
+  --focus-ring: #a78bfa;
+  --chart-1: #8b5cf6;
+  --chart-2: #2563eb;
+  --chart-3: #06b6d4;
+  --chart-4: #10b981;
+  --chart-5: #f59e0b;
+  --chart-6: #f472b6;
+  --chart-7: #6366f1;
+  --chart-8: #14b8a6;
+  --sidebar-background: #171123;
+  --sidebar-foreground: #e9ddff;
+  --sidebar-muted: #a99ac6;
+  --sidebar-active: rgba(124, 58, 237, 0.22);
+  --input-background: #ffffff;
+  --table-row-hover: #f7f3ff;
+  --selected-row: #ede9fe;
+  --overlay: rgba(15, 23, 42, 0.52);
+  --shadow: 0 12px 32px rgba(71, 85, 105, 0.12);
+}
+
+html.dark {
+  color-scheme: dark;
+  --background: #080b14;
+  --foreground: #f7f7fb;
+  --surface: #111827;
+  --surface-elevated: #172033;
+  --surface-muted: #0d1322;
+  --border: #293348;
+  --border-subtle: #1f293d;
+  --primary: #a78bfa;
+  --primary-hover: #c4b5fd;
+  --secondary: #60a5fa;
+  --accent: #22d3ee;
+  --muted-text: #9aa7bd;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #fb7185;
+  --focus-ring: #c084fc;
+  --chart-1: #a78bfa;
+  --chart-2: #60a5fa;
+  --chart-3: #22d3ee;
+  --chart-4: #34d399;
+  --chart-5: #fbbf24;
+  --chart-6: #f472b6;
+  --chart-7: #818cf8;
+  --chart-8: #2dd4bf;
+  --sidebar-background: #0a0d18;
+  --sidebar-foreground: #f4efff;
+  --sidebar-muted: #8f9bb3;
+  --sidebar-active: rgba(167, 139, 250, 0.22);
+  --input-background: #0d1424;
+  --table-row-hover: rgba(167, 139, 250, 0.1);
+  --selected-row: rgba(167, 139, 250, 0.18);
+  --overlay: rgba(0, 0, 0, 0.68);
+  --shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--primary) 11%, transparent) 0, transparent 32rem),
+    linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
+  color: var(--foreground);
+  font-family: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-heading {
+  font-family: "Space Grotesk", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.focus-ring {
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  --tw-ring-color: var(--focus-ring);
+  --tw-ring-offset-color: var(--background);
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen lg:grid lg:grid-cols-[var(--sidebar-width)_1fr];
+  }
+
+  .app-shell[data-collapsed="true"] {
+    --sidebar-width: 5rem;
+  }
+
+  .app-shell[data-collapsed="false"] {
+    --sidebar-width: 17rem;
+  }
+
+  .app-sidebar {
+    background: var(--sidebar-background);
+    color: var(--sidebar-foreground);
+  }
+
+  .topbar {
+    @apply sticky top-0 z-30 border-b backdrop-blur-xl;
+    background: color-mix(in srgb, var(--surface-elevated) 88%, transparent);
+    border-color: var(--border);
+  }
+
+  .surface {
+    @apply rounded-xl border transition duration-200;
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .surface-muted {
+    @apply rounded-lg border transition duration-150;
+    background: var(--surface-muted);
+    border-color: var(--border-subtle);
+  }
+
+  .btn-primary {
+    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--primary) 24%, transparent);
+  }
+
+  .btn-secondary {
+    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--foreground);
+  }
+
+  .btn-secondary:hover {
+    background: var(--table-row-hover);
+  }
+
+  .btn-warning {
+    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition duration-150;
+    background: color-mix(in srgb, var(--warning) 12%, var(--surface));
+    border-color: color-mix(in srgb, var(--warning) 32%, var(--border));
+    color: var(--warning);
+  }
+
+  .field-control {
+    @apply focus-ring rounded-lg border px-3 py-2 text-sm shadow-inner shadow-slate-900/[0.03] transition duration-150 placeholder:text-slate-400;
+    background: var(--input-background);
+    border-color: var(--border);
+    color: var(--foreground);
+  }
+
+  .field-control:hover {
+    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  }
+
+  .section-heading {
+    @apply text-xl font-semibold;
+    color: var(--foreground);
+  }
+
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-wide;
+    color: var(--primary);
+  }
+
+  .muted-text {
+    color: var(--muted-text);
+  }
+
+  .status-primary,
+  .status-info,
+  .status-success,
+  .status-warning,
+  .status-danger,
+  .status-muted {
+    @apply border;
+  }
+
+  .status-primary {
+    background: color-mix(in srgb, var(--primary) 13%, var(--surface));
+    border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
+    color: var(--primary);
+  }
+
+  .status-info {
+    background: color-mix(in srgb, var(--secondary) 13%, var(--surface));
+    border-color: color-mix(in srgb, var(--secondary) 35%, var(--border));
+    color: var(--secondary);
+  }
+
+  .status-success {
+    background: color-mix(in srgb, var(--success) 13%, var(--surface));
+    border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+    color: var(--success);
+  }
+
+  .status-warning {
+    background: color-mix(in srgb, var(--warning) 13%, var(--surface));
+    border-color: color-mix(in srgb, var(--warning) 35%, var(--border));
+    color: var(--warning);
+  }
+
+  .status-danger {
+    background: color-mix(in srgb, var(--danger) 13%, var(--surface));
+    border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+    color: var(--danger);
+  }
+
+  .status-muted {
+    background: var(--surface-muted);
+    border-color: var(--border);
+    color: var(--muted-text);
+  }
+
+  .data-row {
+    border-bottom: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+    transition: background-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .data-row:hover {
+    background: var(--table-row-hover);
+    box-shadow: inset 3px 0 0 color-mix(in srgb, var(--primary) 70%, transparent);
+  }
+
+  .data-row:focus-within {
+    background: var(--selected-row);
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
+
+  .chart-segment {
+    transition: stroke-dasharray 200ms ease, stroke-dashoffset 200ms ease, opacity 150ms ease;
+  }
+
+  .progress-fill {
+    transition: width 200ms ease, filter 150ms ease;
+  }
+
+  .progress-fill:hover {
+    filter: saturate(1.15) brightness(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
