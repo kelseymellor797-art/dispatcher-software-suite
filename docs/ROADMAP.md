@@ -6,7 +6,7 @@ Transform Dispatcher Software Suite into a secure, production-ready, real-time t
 
 ## Current Phase
 
-Phase 1 - Repository and architecture audit.
+Phase 2A - Local Supabase auth, schema, RLS, and repository boundary preparation.
 
 ## Completed Work
 
@@ -16,8 +16,21 @@ Phase 1 - Repository and architecture audit.
 - Confirmed Supabase integration is currently foundational only: environment validation plus browser/server client factories.
 - Confirmed there is no `supabase/` directory, migration history, local Supabase config, database schema, auth flow, protected routes, or RLS policy implementation in the repository.
 - Created initial architecture, GPS, security, deployment, decision, and demo documentation.
+- Baseline repository was committed and pushed to `https://github.com/kelseymellor797-art/dispatcher-software-suite`.
+- Phase 2A design was approved with a dedicated Supabase project, private admin-managed auth, reduced role set, no hard deletes, and local-first migrations.
 
 ## Validation Results
+
+Latest Phase 2A local validation on 2026-07-21:
+
+- `npm run supabase:reset` - passed, local database recreated from migrations and fictional seed data.
+- `npm run supabase:test` - passed, 1 pgTAP file and 12 RLS tests.
+- `npm run supabase:types` - passed, generated `src/lib/supabase/database.types.ts`.
+- `npx supabase migration list --local` - passed, local migration `20260721092751_dispatcher_phase_2a_schema` is applied.
+- `npm run typecheck` - passed.
+- `npm run lint` - passed.
+- `npm run test` - passed, 3 test files and 17 tests.
+- `npm run build` - passed, 10 app routes generated.
 
 Latest Phase 1 validation on 2026-07-20:
 
@@ -50,7 +63,7 @@ Exit criteria:
 
 ### Phase 2 - Authentication and Authorization
 
-Status: not started.
+Status: complete locally, pending user participation to create/authorize the dedicated Supabase project before remote dry run or migration application.
 
 Planned scope:
 
@@ -60,6 +73,40 @@ Planned scope:
 - Design profile/role storage with server-enforced permissions.
 - Add database migrations and RLS policies.
 - Test role behavior and unsafe access attempts.
+
+Phase 2A approved implementation scope:
+
+- Update `ROADMAP.md` and `DECISIONS.md` with approved decisions.
+- Prepare the dedicated-project setup plan.
+- Initialize local Supabase configuration.
+- Create reviewed local migration files.
+- Add local development seed data containing fictional data only.
+- Add database types.
+- Add repository interfaces and test scaffolding.
+- Add RLS tests for allowed and denied operations.
+- Run Next.js validation and local Supabase reset/migration verification.
+- Present migration SQL, policy summary, validation results, and remote dry-run plan.
+
+Completed locally:
+
+- Updated roadmap, decisions, architecture, security, and Supabase setup docs.
+- Initialized local Supabase configuration.
+- Created migration `20260721092751_dispatcher_phase_2a_schema.sql`.
+- Added fictional local seed data.
+- Added generated database types.
+- Added repository interface and demo repository test scaffolding.
+- Added pgTAP RLS tests.
+- Verified local database reset, migration status, RLS tests, generated types, TypeScript, lint, unit tests, and production build.
+
+Phase 2A explicit exclusions:
+
+- Do not use or alter the existing shared Supabase project.
+- Do not apply migrations to any remote project.
+- Do not deploy.
+- Do not enable public access.
+- Do not expose secrets.
+- Do not create real users.
+- Do not remove demo mode.
 
 ### Phase 3 - Application Realtime
 
@@ -170,21 +217,20 @@ Planned scope:
 
 ## Risks
 
-- The repository currently has no commits, so there is no stable baseline diff or branch history.
-- The current app is client-state/localStorage backed; moving to Supabase persistence will require careful repository abstraction and workflow parity tests.
-- There is no database schema or migration history yet, so RLS cannot be verified until Phase 2 creates or connects to a real schema.
+- The existing connected Supabase project is shared with unrelated application tables and must not be used for Dispatcher without explicit future approval.
+- A dedicated Dispatcher Supabase project does not exist yet in this workflow, so remote linking and migration application are blocked until the user participates in project creation/authorization.
+- The current app is client-state/localStorage backed; moving to Supabase persistence requires a repository boundary and workflow parity tests.
+- Local RLS tests can verify policy intent, but remote settings such as public signup disabled, email confirmation, SMTP, and leaked-password protection must be confirmed in the dedicated project dashboard/API before production use.
 - Supabase service role key is listed in `.env.example`; future implementation must ensure it is never exposed to browser code or used casually in request handlers.
-- Authorization roles are not yet justified by real workflows; overbuilding roles too early could create complexity and weak policy coverage.
+- Authorization is intentionally limited to `read_only`, `dispatcher`, `supervisor`, and `admin`; `manager` is deferred until a concrete permission difference exists.
 - Physical GPS integration depends on tracker model, SIM/APN setup, Traccar hosting, and real connectivity that cannot be fully completed without user participation.
 - Mapping and ETA providers may introduce paid services, credential handling, and privacy concerns.
 - Browser localStorage demo behavior should remain available until production persistence is verified, but must not be mistaken for production data handling.
 
 ## Missing Information
 
-- Supabase project reference, local Supabase config, or linked MCP/project access.
-- Existing database schema, if any exists outside the repository.
-- Desired auth provider setup: email/password, magic link, OAuth, invited users, or admin-created users.
-- Role model details: which exact actions each role should perform.
+- Dedicated Supabase project reference and confirmed region/organization.
+- Dedicated project auth settings confirmation: public signups disabled, email confirmation enabled, password reset configured.
 - Physical tracker make/model, IMEI/device identifier handling requirements, supported protocol, and configuration method.
 - SpeedTalk SIM plan details and verified APN/SMS configuration instructions.
 - Preferred map provider and routing provider constraints.
@@ -193,27 +239,27 @@ Planned scope:
 
 ## Decisions Awaiting Approval
 
-- Whether Phase 2 should first create a local Supabase migration set from the current TypeScript domain model, or connect to an existing Supabase project and inspect its schema.
-- Whether demo mode should remain as a supported offline mode after Supabase persistence exists.
-- Which authentication method should be implemented first.
-- Whether to create a Git baseline commit before Phase 2 implementation.
+- Which organization and region should host the dedicated Dispatcher Supabase project.
+- Whether to apply local migrations to the dedicated project after local reset/types/tests pass and dry-run output is reviewed.
+- Whether admin users will be created through Supabase Dashboard invites first or through a later admin-only server action.
 
 ## Proposed First Small Implementation Milestone
 
-Phase 2A: Supabase persistence and auth foundation design.
+Phase 2A: Local Supabase auth, schema, RLS, and repository boundary preparation.
 
 Deliverables:
 
-- Confirm Supabase project access or initialize local Supabase config.
-- Create the first migration for `profiles`, `service_requests`, `drivers`, and `activity_logs` from the existing domain model.
-- Add RLS enabled on every public table.
-- Add minimally privileged policies for authenticated users, initially using a conservative dispatcher/admin model until detailed role permissions are approved.
-- Generate or define TypeScript database types.
-- Add repository tests that prove current workflow behavior can be preserved against the new persistence contract.
+- Initialize local Supabase config.
+- Create local migrations for `profiles`, `service_requests`, `drivers`, and `activity_logs` from the existing domain model and approved revisions.
+- Add RLS enabled on every new public table.
+- Add private role helper functions with fixed `search_path`.
+- Add policies for `read_only`, `dispatcher`, `supervisor`, and `admin`.
+- Generate TypeScript database types from local schema.
+- Add repository interface and tests that preserve demo mode and workflow behavior.
 - Keep existing demo mode working until Supabase mode is verified.
 
 This milestone should stop before GPS work.
 
 ## Next Action
 
-Get user approval for the Phase 2A milestone and confirm whether to connect to an existing Supabase project or initialize local Supabase migrations first.
+Stop for user participation to create/authorize the dedicated Supabase project. After the project exists and is confirmed, run `npx supabase link --project-ref <dedicated-project-ref>` and `npx supabase db push --dry-run` only with explicit approval.

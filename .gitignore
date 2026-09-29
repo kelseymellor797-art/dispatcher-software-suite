@@ -1,6 +1,8 @@
 .env
 .env.local
 .env.*.local
+.DS_Store
+.vercel/
 .next/
 node_modules/
 coverage/

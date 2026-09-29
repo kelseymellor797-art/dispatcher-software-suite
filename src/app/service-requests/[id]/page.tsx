@@ -48,6 +48,12 @@ export default function ServiceRequestDetailPage() {
     setError("");
   };
 
+  const clearAssignment = () => {
+    unassign(request.id);
+    setMessage("Driver assignment cleared.");
+    setError("");
+  };
+
   return (
     <div>
       <PageHeader eyebrow="Dispatch detail" title={request.customer_name} description={`Dispatch ${request.id}`}>
@@ -99,8 +105,15 @@ export default function ServiceRequestDetailPage() {
           <DashboardCard title="Assignment controls" description="Assign, reassign, override unavailable drivers, or clear the current assignment.">
             <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
               <label className="flex flex-col gap-1">
-                <span className="text-sm font-semibold" style={{ color: "var(--foreground)" }}>Driver</span>
-                <select className="field-control" onChange={(event) => setSelectedDriver(event.target.value)} value={selectedDriver}>
+                <span className="text-sm font-semibold" style={{ color: "var(--foreground)" }} id="assignment-driver-label">Driver</span>
+                <select
+                  aria-labelledby="assignment-driver-label"
+                  className="field-control"
+                  id="assignment-driver"
+                  name="assignment-driver"
+                  onChange={(event) => setSelectedDriver(event.target.value)}
+                  value={selectedDriver}
+                >
                   <option value="">Select driver</option>
                   {state.drivers.map((driver) => (
                     <option key={driver.id} value={driver.id}>
@@ -116,7 +129,7 @@ export default function ServiceRequestDetailPage() {
                 Override
               </button>
             </div>
-            <button className="btn-secondary mt-3" onClick={() => unassign(request.id)} type="button">
+            <button className="btn-secondary mt-3" onClick={clearAssignment} type="button">
               <UserMinus className="h-4 w-4" aria-hidden="true" />
               Unassign driver
             </button>
@@ -159,4 +172,3 @@ function Info({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-

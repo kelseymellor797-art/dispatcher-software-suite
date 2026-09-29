@@ -41,11 +41,12 @@ export function getDispatchMetrics(state: DispatchState) {
 }
 
 export function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     hour: "numeric",
-    minute: "2-digit"
+    minute: "2-digit",
+    timeZone: "America/Los_Angeles"
   }).format(new Date(value));
 }
 
@@ -60,4 +61,3 @@ export function formatDuration(minutes: number | null) {
 export function getRequestAgeMinutes(request: ServiceRequest) {
   return Math.max(0, Math.round((Date.now() - new Date(request.created_at).getTime()) / 60_000));
 }
-

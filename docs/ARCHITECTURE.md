@@ -24,12 +24,16 @@ src/components
   application shell, theme system, dashboard cards, badges, charts, timeline, request cards
 src/domain
   business types, Zod schemas, workflow functions, analytics helpers, demo seed data
+src/data
+  repository boundary and demo implementation used as the persistence contract for Supabase migration
 src/lib
-  environment validation and Supabase client factories
+  environment validation, generated database types, and Supabase client factories
 src/test
   Vitest setup
 scripts
   demo data export script
+supabase
+  local Supabase config, migrations, seed data, and database tests
 docs
   architecture, roadmap, ADRs, and operational documentation
 ```
@@ -63,8 +67,8 @@ Current TypeScript entities:
   - name
   - phone
   - status: `available`, `assigned`, `unavailable`, `off_duty`
-  - current assignment id
   - created and updated timestamps
+- Current assignment is local demo state only. In the Phase 2A database schema, `service_requests.assigned_driver_id` is the source of truth and driver assignment is derived from active service requests.
 - `ActivityLog`
   - entity type
   - entity id
@@ -109,18 +113,21 @@ Implemented:
 - `src/lib/supabase/client.ts` creates a browser client with `@supabase/ssr`.
 - `src/lib/supabase/server.ts` creates a server client with cookie support.
 - ADR 0001 documents the Supabase SSR foundation.
+- `supabase/config.toml` defines the local Supabase stack.
+- `supabase/migrations/20260721092751_dispatcher_phase_2a_schema.sql` defines local Dispatcher tables, enums, private role helpers, RLS policies, triggers, indexes, and realtime publication entries.
+- `supabase/seed.sql` contains fictional local development records.
+- `supabase/tests/dispatcher_rls_test.sql` verifies allowed and denied RLS behavior with pgTAP.
+- `src/data/dispatch-repository.ts` and `src/data/demo-dispatch-repository.ts` define the first repository boundary.
 
 Not yet implemented:
 
+- Dedicated remote Dispatcher Supabase project.
 - Supabase project linkage.
-- `supabase/config.toml`.
-- migrations.
-- database types.
 - authentication UI or session middleware.
 - protected routes.
 - production repositories.
-- RLS policies.
-- realtime subscriptions.
+- remote migration application.
+- remote auth settings verification.
 - storage, functions, or edge workers.
 
 ## Testing Architecture
@@ -150,6 +157,9 @@ Validation scripts:
 - `npm run test`
 - `npm run build`
 - `npm run seed`
+- `npm run supabase:reset`
+- `npm run supabase:test`
+- `npm run supabase:types`
 
 ## Target Production Architecture
 
@@ -190,7 +200,7 @@ Location services
 
 ## Recommended Next Architecture Change
 
-Add a persistence boundary before replacing localStorage. The current provider can depend on a repository interface with two implementations:
+Continue through the persistence boundary before replacing localStorage. The current provider can depend on a repository interface with two implementations:
 
 - demo repository backed by localStorage.
 - Supabase repository backed by authenticated database access.

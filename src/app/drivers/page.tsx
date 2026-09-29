@@ -46,10 +46,12 @@ export default function DriversPage() {
                     <Info label="Last activity">{formatDateTime(driver.updated_at)}</Info>
                   </dl>
 
-                  <label className="mt-4 flex flex-col gap-1">
+                  <label className="mt-4 flex flex-col gap-1" htmlFor={`driver-status-${driver.id}`}>
                     <span className="text-sm font-semibold" style={{ color: "var(--foreground)" }}>Update status</span>
                     <select
                       className="field-control"
+                      id={`driver-status-${driver.id}`}
+                      name={`driver-status-${driver.id}`}
                       onChange={(event) => setDriverStatus(driver.id, event.target.value as DriverStatus)}
                       value={driver.status}
                     >
